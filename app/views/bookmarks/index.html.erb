@@ -1,0 +1,24 @@
+<div class="pt-3">
+  <font color="#FF6600"><div class="h2">Bookmarks</font></div>
+</div>
+<div class="row">
+  <% @bookmarks.each do |bookmark| %>
+  <div class="cooking col-md-3 pt-3 mb-3 border border-warning rounded">
+    <div class="pb-3">
+    <%= attachment_image_tag bookmark.cooking.user, :profile_image, :fill, 40, 40, format: 'jpeg', class:"rounded-circle"; %>
+    <span class="ml-2"><%= bookmark.cooking.user.name %></span>
+    </div>
+    <div class="text-center">
+      <%= attachment_image_tag bookmark.cooking, :cooking_image, :size => '200x150', fallback: "no_image.jpg"%>
+    </div>
+    <div class="card-body">
+      <div>
+        <%= bookmark.cooking.created_at.strftime('%Y/%m/%d') %>
+      </div>
+      <div class="pt-1">
+        <i class="fas fa-utensils"></i><span class="ml-2"><%= link_to cooking_path(bookmark.cooking.id) do %><%= bookmark.cooking.name %><% end %></span>
+      </div>
+    </div>
+  </div>
+    <% end %>
+</div>

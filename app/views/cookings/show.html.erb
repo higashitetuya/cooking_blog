@@ -1,0 +1,141 @@
+<% if @cooking_comment.errors.any? %>
+  <%= @cooking_comment.errors.count %>件のエラーが発生しました
+  <% @cooking_comment.errors.full_messages.each do |message| %>
+    <div>
+      <li><font color="red"><%= message %></font></li>
+    </div>
+  <% end %>
+<% end %>
+<div class="row">
+  <div class="col-md-6 pt-5">
+    <div class="row">
+      <div class="cooking col-md-6 pb-3 border border-warning rounded pt-3">
+        <div class="pb-3">
+          <%= attachment_image_tag @cooking.user, :profile_image, :fill, 50, 50, format: 'jpeg', class:"rounded-circle"; %>
+          <span class="ml-2"><%= @cooking.user.name %></span>
+        </div>
+        <%= attachment_image_tag @cooking, :cooking_image, :fill, 250, 200, format: 'jpeg' %>
+            <% unless @cooking.user_id == current_user.id %>
+            <div class="pt-3 text-center">
+            <div class="line-it-button" data-lang="ja" data-type="share-a" data-ver="3" data-url="https://social-plugins.line.me/ja/how_to_install#lineitbutton" data-color="default" data-size="small" data-count="false" style="display: none;"></div>
+             <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+
+            <div id="fb-root"></div>
+            <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v10.0" nonce="gTmNljCI"></script>
+            <div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">シェア</a></div>
+            </div>
+            <% end %>
+            <div class="text-center pt-2">
+              <span class="pr-5">
+                <% if @cooking.user != current_user %> <% '投稿した人とログインしている人が一致しなかったら表示する' %>
+                <% if Like.find_by(user_id: current_user.id, cooking_id: @cooking.id) %>
+                    <%= link_to cooking_like_path(@cooking), method: :delete, class:"element", remote: true do %>
+                      <i class="fas fa-thumbs-up"></i><span class="ml-2"><%= @cooking.likes.count %></span>
+                    <% end %>
+                  <% else %>
+                    <%= link_to cooking_likes_path(@cooking), method: :post, class:"element", remote: true do %>
+                      <i class="fas fa-thumbs-up"></i><span class="ml-2"><%= @cooking.likes.count %></span>
+                    <% end %>
+                <% end %>
+                <% end %>
+              </span>
+              <% unless @cooking.user_id == current_user.id %>
+                <% if @bookmark.present? %>
+                      <%= link_to bookmarks_path(id: @bookmark.id), method: :delete, class: "btn btn-danger" do %><i class="far fa-star"></i> 解除<% end %>
+                <% else %>
+                      <%= link_to bookmarks_path(cooking_id: @cooking.id), method: :post, class:"btn btn-warning" do %><i class="far fa-star"></i> 登録<% end %>
+                <% end %>
+              <% end %>
+            </div>
+          <div class="text-center pt-2">
+            <span class="pr-5"><% if @cooking.user == current_user %><%= link_to edit_cooking_path(@cooking.id), class: "btn btn-secondary", method: :get do %><i class="fas fa-pen"></i><% end %></span>
+            <%= link_to "削除する", cooking_path(@cooking.id), method: :delete, "data-confirm" => "本当に削除しますか？", class: 'btn btn-danger' %><% end %>
+          </div>
+        </div>
+        <div class="cooking_introduction col-md-6 border border-warning rounded">
+          <div class="pt-3">
+            <%= @cooking.name %>
+          </div>
+          <div>
+            <%= @cooking.cooking_introduction %>
+          </div>
+        </div>
+    </div>
+  <div class="py-2">
+    <img src="/assets/star-on.png" alt=""><font color="white">お気に入りユーザー</font>
+  </div>
+  <div class="row">
+  <% @bookmarks.each do |bookmark| %>
+  <div class="col-md-3 text-center">
+    <%= attachment_image_tag bookmark, :profile_image, :size => '100x100', fallback: "no_image.jpg"%>
+    <div>
+      <font color="white"><%= bookmark.name %></font>
+    </div>
+  </div>
+  <% end %>
+  </div>
+  </div>
+<div class="col-md-6 pt-5">
+<% unless @cooking.user_id == current_user.id %>
+  <%= form_with(model:[@cooking, @cooking_comment],local: true) do |f| %>
+
+  <span id="rating-form">
+        <label>評価：</label>
+        <%# scoreNameの値をhidden_fieldでカラムに送っている %>
+        <span><%= f.hidden_field :rate, id: :review_star %></span>
+    </span>
+  <div class="pb-2">
+    <%= f.text_area :comment, size: "40x5" %>
+    <%= f.submit '送信', class: "btn-sm btn-primary" %>
+  </div>
+  <script>
+    $('#rating-form').raty({
+        starOn: "<%= asset_path('star-on.png') %>",
+        starOff: "<%= asset_path('star-off.png') %>",
+        starHalf: "<%= asset_path('star-half.png') %>",
+        scoreName: 'cooking_comment[rate]',
+        half: true,
+    });
+  </script>
+
+<% end %>
+<% end %>
+
+<table>
+  <thead>
+    <tr class="border-bottom text-center">
+      <th>投稿日</th>
+      <th>投稿者</th>
+      <th width="210">コメント一覧</th>
+      <th>評価</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody class="text-white">
+    <% @cooking_comments.each do |comment| %>
+      <tr class="border-bottom">
+        <td><%= comment.created_at.strftime('%Y/%m/%d') %></td>
+        <td class="text-center"><%= comment.user.name %></td>
+        <td><%= comment.comment %></td>
+        <td><span id="star-rate-<%= comment.id %>"></span>
+        <script>
+          $('#star-rate-<%= comment.id %>').raty({
+            size: 36,
+            starOff:  '<%= asset_path('star-off.png') %>',
+            starOn : '<%= asset_path('star-on.png') %>',
+            starHalf: '<%= asset_path('star-half.png') %>',
+            half: true,
+            readOnly: true,
+            score: <%= comment.rate %>,
+          });
+      </script>
+        </td>
+        <td><% if current_user && comment.user == current_user %>  <% 'コメントしたユーザーのみ、コメントの削除ができるようにします。'%>
+            <%= link_to cooking_cooking_comment_path(@cooking, comment), method: :delete, class: 'btn btn-danger btn-sm' do %>削除<% end %>
+            <% end %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</div>
+</div>

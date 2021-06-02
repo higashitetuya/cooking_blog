@@ -1,0 +1,33 @@
+<div class="mt-5 mb-3 text-center">
+  <font color="red">
+    <%= notice %>
+    <%= alert %>
+  </font>
+</div>
+<div class="col-lg-8 mx-auto text-white">
+    <div class="pb-4">
+      <span class="px-3 h3">ログイン</span>
+    </div>
+
+<%= form_with url: login_path, local: true do |f| %>
+<div class="row">
+  <div class="col-lg-1">
+  </div>
+  <div class="col-lg-11">
+    <div class="field">
+      <%= f.label :名前 %><br>
+      <%= f.text_field :name , :placeholder => "\uf007 名前" ,class: "form-control w-75 fa" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :パスワード %><br>
+      <%= f.password_field :password , :placeholder => "\uf502 パスワード" ,class: "form-control w-75 fa" %>
+    </div>
+
+    <div class="mt-4">
+      <%= f.submit "ログイン",class: "btn btn-primary w-25" %><span class="ml-3">新規登録をしていない方は<%= link_to "こちら>", new_user_path %></span>
+    </div>
+  </div>
+</div>
+<% end %>
+</div>

@@ -1,0 +1,60 @@
+<% @cookings.each do |cooking| %>
+  <% @sum += cooking.likes.count %>
+<% end %>
+<div class="text-center pt-3">
+<font color="white">
+  <%= notice %>
+  <p class="pt-3">ようこそ"<strong><%= @user.name %></strong>"さん</p>
+</font>
+</div>
+<div class="row">
+  <div class="col-md-3 pt-3">
+    <table class="table text-white">
+      <tbody>
+        <tr>
+          <td><%= attachment_image_tag @user, :profile_image, :size => '100x100', fallback: "no_image.jpg" %></td>
+        </tr>
+        <tr>
+          <td>名前 | <%= @user.name %></td>
+        </tr>
+        <tr>
+          <td>Email | <%= @user.email %></td>
+        </tr>
+        <tr>
+          <td>自己紹介文<br><%= @user.introduction %></td>
+        </tr>
+        <tr>
+          <td><img src="/assets/star-on.png" alt="">お気に入り数<span class="ml-2"><%= current_user.bookmarks.count %></span></td>
+        </tr>
+        <tr>
+          <td>いいねをもらった数<span class="ml-3"><font color="#FFA500"><i class="fas fa-thumbs-up"></i></font></span><span class="ml-2"><%= @sum %></span></td>
+        </tr>
+        <tr>
+          <td><%= link_to edit_user_path , class: "btn btn-secondary", method: :get do %><i class="fas fa-wrench"></i><% end %>
+              <%= link_to new_cooking_path , class: "btn btn-success", method: :get do %><i class="fas fa-utensils"></i> 投稿<% end %>
+              <%= link_to index_bookmaks_path , class: "btn btn-warning", method: :get do %><i class="far fa-star"></i><% end %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-9 pt-3">
+    <div class="row">
+      <% @cookings.each do |cooking| %>
+      <div class="cooking col-md-4 pt-4 border border-warning rounded">
+        <div class="text-center">
+          <%= attachment_image_tag cooking, :cooking_image, :size => '200x150' %>
+        </div>
+        <div class="card-body">
+          <div>
+          <%= cooking.created_at.strftime('%Y/%m/%d') %>
+          </div>
+          <div class="pt-1">
+            <i class="fas fa-utensils"></i><span class="ml-2"><%= link_to cooking_path(cooking.id) do %><%= cooking.name %><% end %></span>
+          </div>
+        </div>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
