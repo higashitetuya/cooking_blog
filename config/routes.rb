@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   root to: 'homes#top'
   get 'about' => 'homes#about'
   resource :user, only: [:new, :create, :edit]
@@ -19,5 +18,4 @@ Rails.application.routes.draw do
   end
 
   get 'rankings' => 'cookings#ranking', as: :cooking_rankings
-
 end

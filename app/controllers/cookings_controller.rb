@@ -1,20 +1,21 @@
 class CookingsController < ApplicationController
-  before_action :login?, only: [:show, :new, :edit] #ログインしていないといけないようにする
+  before_action :login?, only: [:show, :new, :edit] # ログインしていないといけないようにする
   def new
     @cooking = Cooking.new
   end
 
   def index
     @cookings = Cooking.order("updated_at DESC")
+    puts "作成したキー #{ENV['SECRET_KEY']}"
   end
 
   def create
     @cooking = Cooking.new(cooking_params)
     @cooking.user_id = current_user.id
     if @cooking.save
-       redirect_to user_show_path(current_user.id)
+      redirect_to user_show_path(current_user.id)
     else
-       render :new
+      render :new
     end
   end
 
@@ -25,9 +26,9 @@ class CookingsController < ApplicationController
   def update
     @cooking = Cooking.find(params[:id])
     if @cooking.update(cooking_params)
-       redirect_to cooking_path(@cooking.id)
+      redirect_to cooking_path(@cooking.id)
     else
-       render :edit
+      render :edit
     end
   end
 

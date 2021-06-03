@@ -1,5 +1,4 @@
 class CookingCommentsController < ApplicationController
-
   def create
     @cooking = Cooking.find(params[:cooking_id])
     @cooking_comment = @cooking.cooking_comments.new(cooking_comment_params)
